@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Customer Segmentation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-users me-2"></i>Customer Segmentation
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('about') }}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header bg-white">
+                        <h1 class="h3 text-center text-primary">
+                            <i class="fas fa-info-circle me-2"></i>About This Project
+                        </h1>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="h5 text-primary">Customer Segmentation Analysis</h3>
+                        <p>This application uses K-Means clustering to group customers based on their demographic and behavioral characteristics. The clustering helps businesses understand different customer segments and tailor their marketing strategies accordingly.</p>
+                        
+                        <h3 class="h5 text-primary mt-4">How It Works</h3>
+                        <p>The system analyzes three key factors:</p>
+                        <ul>
+                            <li><strong>Age:</strong> The customer's age in years</li>
+                            <li><strong>Annual Income:</strong> The customer's yearly income in thousands of dollars</li>
+                            <li><strong>Spending Score:</strong> A score from 1-100 representing the customer's spending behavior</li>
+                        </ul>
+                        
+                        <h3 class="h5 text-primary mt-4">Technology Stack</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Backend</h5>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fas fa-check text-success me-2"></i>Python Flask</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>Scikit-learn</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>Pandas</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>Matplotlib</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Frontend</h5>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fas fa-check text-success me-2"></i>HTML5</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>Bootstrap 5</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>CSS3</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>JavaScript</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>About This Project</h5>
+                    <p>Customer segmentation using K-Means clustering to group customers based on their age, income, and spending score.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('index') }}" class="text-white">Home</a></li>
+                        <li><a href="{{ url_for('about') }}" class="text-white">About</a></li>
+                        <li><a href="{{ url_for('contact') }}" class="text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Connect</h5>
+                    <a href="#" class="text-white me-2"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" class="text-white me-2"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-white me-2"><i class="fab fa-linkedin fa-lg"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-github fa-lg"></i></a>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Customer Segmentation App. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

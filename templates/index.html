@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Segmentation Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .visualization-card {
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+        .visualization-card:hover {
+            transform: translateY(-5px);
+        }
+        .visualization-img {
+            max-height: 400px;
+            width: auto;
+            margin: 0 auto;
+            display: block;
+        }
+        .btn-load-defaults {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+        }
+        .btn-load-defaults:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+                <i class="fas fa-chart-pie me-2"></i>Customer Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link"><i class="fas fa-home me-1"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}"><i class="fas fa-info-circle me-1"></i> About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('contact') }}"><i class="fas fa-envelope me-1"></i> Contact</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow">
+                    <div class="card-header bg-white">
+                        <h1 class="h3 text-center text-primary">
+                            <i class="fas fa-users-cog me-2"></i>Customer Segmentation Tool
+                        </h1>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ url_for('predict') }}" method="POST">
+                            <div class="mb-3">
+                                <label for="age" class="form-label">Age</label>
+                                <input type="number" class="form-control" id="age" name="age" required min="18" max="100">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="income" class="form-label">Annual Income (k$)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="income" name="income" required min="10" max="500">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="score" class="form-label">Spending Score (1-100)</label>
+                                <input type="number" class="form-control" id="score" name="score" required min="1" max="100">
+                            </div>
+                            
+                            <div class="d-grid gap-3">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-chart-line me-2"></i>Analyze Customer
+                                </button>
+                            </div>
+                        </form>
+                        
+                        {% if prediction %}
+                        <div class="alert alert-info mt-4 text-center">
+                            <h4 class="alert-heading">Segmentation Result</h4>
+                            <p class="mb-0 fs-5">{{ prediction }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if images %}
+                <div class="card shadow mt-4">
+                    <div class="card-header bg-white">
+                        <h2 class="h4 text-center text-primary">
+                            <i class="fas fa-chart-bar me-2"></i>Customer Visualizations
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 visualization-card">
+                                    <div class="card-header bg-light">
+                                        <h5 class="card-title"><i class="fas fa-money-bill-wave me-2"></i>Income vs. Spending</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <img src="{{ url_for('static', filename=images['income_vs_score']) }}" 
+                                             class="visualization-img" 
+                                             alt="Income vs Spending Score">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 visualization-card">
+                                    <div class="card-header bg-light">
+                                        <h5 class="card-title"><i class="fas fa-user-clock me-2"></i>Age vs. Spending</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <img src="{{ url_for('static', filename=images['age_vs_score']) }}" 
+                                             class="visualization-img" 
+                                             alt="Age vs Spending Score">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 visualization-card">
+                                    <div class="card-header bg-light">
+                                        <h5 class="card-title"><i class="fas fa-user-tie me-2"></i>Age vs. Income</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <img src="{{ url_for('static', filename=images['age_vs_income']) }}" 
+                                             class="visualization-img" 
+                                             alt="Age vs Income">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 visualization-card">
+                                    <div class="card-header bg-light">
+                                        <h5 class="card-title"><i class="fas fa-object-group me-2"></i>Cluster Distribution</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <img src="{{ url_for('static', filename=images['cluster_distribution']) }}" 
+                                             class="visualization-img" 
+                                             alt="Cluster Distribution">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+     <!-- Footer -->
+     <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>About This Project</h5>
+                    <p>Customer segmentation using K-Means clustering to group customers based on their age, income, and spending score.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-white">Home</a></li>
+                        <li><a href="/about" class="text-white">About</a></li>
+                        <li><a href="/contact" class="text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Connect</h5>
+                    <a href="#" class="text-white me-2"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" class="text-white me-2"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-white me-2"><i class="fab fa-linkedin fa-lg"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-github fa-lg"></i></a>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Customer Segmentation App. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
