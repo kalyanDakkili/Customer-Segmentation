@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import pandas as pd
 import numpy as np
 import joblib
@@ -7,9 +8,29 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+# Simple User class
+class User(UserMixin):
+    def __init__(self, id, email, password):
+        self.id = id
+        self.email = email
+        self.password = password
+
+# Mock database for users
+users = {}
+
+@login_manager.user_loader
+def load_user(user_id):
+    return users.get(user_id)
 
 # Load model and scaler
 try:
@@ -24,12 +45,52 @@ except Exception as e:
 data_store = []
 
 @app.route('/')
-def index():
-    return redirect(url_for('dashboard'))
+def home():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+    return render_template('home.html')
 
 @app.route('/dashboard')
+@login_required
 def dashboard():
     return render_template("index.html", prediction=None, images=None)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        user = next((u for u in users.values() if u.email == email), None)
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for('dashboard'))
+        flash('Invalid email or password')
+    return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        if any(u.email == email for u in users.values()):
+            flash('Email already registered')
+            return redirect(url_for('register'))
+        
+        user_id = str(len(users) + 1)
+        hashed_password = generate_password_hash(password)
+        users[user_id] = User(user_id, email, hashed_password)
+        
+        flash('Registration successful! Please login.')
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 @app.route('/about')
 def about():
@@ -40,6 +101,7 @@ def contact():
     return render_template("contact.html")
 
 @app.route('/predict', methods=['POST'])
+@login_required
 def predict():
     try:
         age = int(request.form.get("age", 0))

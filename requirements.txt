@@ -9,3 +9,4 @@ flask-mysqldb
 flask-login
 python-dotenv
 gunicorn
+werkzeug
