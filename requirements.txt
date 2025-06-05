@@ -5,8 +5,8 @@ scikit-learn
 matplotlib
 seaborn
 joblib
-flask-mysqldb
 flask-login
 python-dotenv
 gunicorn
 werkzeug
+supabase

@@ -9,9 +9,19 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
+from supabase import create_client, Client
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'
+
+# Initialize Supabase client
+supabase: Client = create_client(
+    os.getenv('SUPABASE_URL'),
+    os.getenv('SUPABASE_KEY')
+)
 
 # Initialize Flask-Login
 login_manager = LoginManager()
@@ -25,12 +35,16 @@ class User(UserMixin):
         self.email = email
         self.password = password
 
-# Mock database for users
-users = {}
-
 @login_manager.user_loader
 def load_user(user_id):
-    return users.get(user_id)
+    try:
+        response = supabase.table('users').select('*').eq('id', user_id).execute()
+        if response.data:
+            user_data = response.data[0]
+            return User(user_data['id'], user_data['email'], user_data['password'])
+    except Exception as e:
+        print(f"Error loading user: {str(e)}")
+    return None
 
 # Load model and scaler
 try:
@@ -46,8 +60,6 @@ data_store = []
 
 @app.route('/')
 def home():
-    if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
     return render_template('home.html')
 
 @app.route('/dashboard')
@@ -61,11 +73,16 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         
-        user = next((u for u in users.values() if u.email == email), None)
-        if user and check_password_hash(user.password, password):
-            login_user(user)
-            return redirect(url_for('dashboard'))
-        flash('Invalid email or password')
+        try:
+            response = supabase.table('users').select('*').eq('email', email).execute()
+            if response.data and check_password_hash(response.data[0]['password'], password):
+                user = User(response.data[0]['id'], email, response.data[0]['password'])
+                login_user(user)
+                return redirect(url_for('dashboard'))
+            flash('Invalid email or password')
+        except Exception as e:
+            flash('Error during login')
+            print(f"Login error: {str(e)}")
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -74,16 +91,25 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
         
-        if any(u.email == email for u in users.values()):
-            flash('Email already registered')
-            return redirect(url_for('register'))
-        
-        user_id = str(len(users) + 1)
-        hashed_password = generate_password_hash(password)
-        users[user_id] = User(user_id, email, hashed_password)
-        
-        flash('Registration successful! Please login.')
-        return redirect(url_for('login'))
+        try:
+            # Check if user exists
+            response = supabase.table('users').select('*').eq('email', email).execute()
+            if response.data:
+                flash('Email already registered')
+                return redirect(url_for('register'))
+            
+            # Create new user
+            hashed_password = generate_password_hash(password)
+            response = supabase.table('users').insert({
+                'email': email,
+                'password': hashed_password
+            }).execute()
+            
+            flash('Registration successful! Please login.')
+            return redirect(url_for('login'))
+        except Exception as e:
+            flash('Error during registration')
+            print(f"Registration error: {str(e)}")
     return render_template('register.html')
 
 @app.route('/logout')

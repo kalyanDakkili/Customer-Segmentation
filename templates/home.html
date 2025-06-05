@@ -9,60 +9,89 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            background-color: white;
-        }
         .hero-section {
-            background-color: white;
-            height: 80vh;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-align: center;
+            padding: 2rem 0;
         }
         .hero-content {
+            text-align: center;
             max-width: 800px;
+            margin: 0 auto;
             padding: 2rem;
         }
         .main-title {
+            color: #0d6efd;
+            margin-bottom: 1.5rem;
             font-weight: 700;
-            color: #0d6efd; /* Bootstrap primary blue */
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
         }
         .subtitle {
-            color: #495057; /* Bootstrap gray */
+            color: #6c757d;
+            margin-bottom: 2.5rem;
+            font-size: 1.25rem;
+        }
+        .auth-buttons .btn {
+            margin: 0.5rem;
+            padding: 0.75rem 2rem;
             font-weight: 500;
+        }
+        .features {
+            margin-top: 3rem;
+            text-align: left;
+        }
+        .feature-item {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        .feature-icon {
+            color: #0d6efd;
+            margin-right: 1rem;
+            font-size: 1.5rem;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('home') }}">
-                <i class="fas fa-users me-2"></i>Customer Segmentation
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
     <div class="hero-section">
-        <div class="hero-content">
-            <h1 class="display-4 mb-4 main-title">Customer Segmentation using K-Means Clustering</h1>
-            <p class="lead mb-4 subtitle">Advanced customer analysis tool for business intelligence</p>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="display-4 main-title">
+                    Customer Segmentation using K-Means Clustering
+                </h1>
+                <p class="subtitle">
+                    Advanced analytics tool for business intelligence and customer insights
+                </p>
+                
+                <div class="auth-buttons">
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Register
+                    </a>
+                </div>
+
+                <div class="features">
+                    <div class="feature-item">
+                        <i class="fas fa-chart-pie feature-icon"></i>
+                        <span>Advanced clustering algorithms for precise customer segmentation</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <span>Real-time data visualization and analysis</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-users feature-icon"></i>
+                        <span>Identify customer patterns and behaviors</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-lightbulb feature-icon"></i>
+                        <span>Data-driven insights for business decisions</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
