@@ -9,7 +9,6 @@ If you’re expecting magic without understanding the basics of deployment, stop
 ## 🔗 Live Demo
 
 **Render URL:** [https://<your-render-app-name>.onrender.com](https://customer-segmentation-rxsd.onrender.com/)
-(Replace this with the actual deployed link. If you don’t, recruiters will assume you didn’t deploy it.)
 
 ---
 
