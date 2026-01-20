@@ -175,16 +175,3 @@ Many candidates fail at **step 3**.
 **Kalyan Dakkili**
 Full Stack Developer
 GitHub: [https://github.com/KalyanDakkili](https://github.com/KalyanDakkili)
-
----
-
-## ⚠️ Final Note (Blunt Truth)
-
-Deployment is not optional anymore.
-
-If your project isn’t live, recruiters assume:
-
-* You copied it
-* Or you don’t understand DevOps basics
-
-This Render deployment removes that doubt.
